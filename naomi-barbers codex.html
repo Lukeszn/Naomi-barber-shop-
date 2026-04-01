@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#0D0D0D"/>
+<meta name="description" content="Naomi Barbers - Book your cut with precision"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Naomi Barbers"/>
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23C9A84C' width='180' height='180'/><text x='50%' y='50%' font-size='90' font-weight='700' fill='%230D0D0D' text-anchor='middle' dominant-baseline='central' font-family='serif'>N</text></svg>"/>
+<link rel="manifest" href="manifest.json"/>
+<title>Naomi Barbers</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --gold:#C9A84C;--gold-dk:#A8882E;
+  --bg:#0D0D0D;--dark:#161616;--surf:#1F1F1F;--card:#272727;
+  --txt:#F0EAD6;--muted:#8A8478;--bdr:#383838;
+  --green:#3DAA68;--red:#D94F4F;--orange:#D9843A;--blue:#4A8FD4;
+}
+body{background:var(--bg);display:flex;justify-content:center;min-height:100vh;}
+#app{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);width:100%;max-width:430px;min-height:100vh;overflow:hidden;position:relative;}
+.screen{display:none;flex-direction:column;min-height:100vh;}
+.screen.active{display:flex;}
+
+/* LOGIN */
+.login-bg{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem;gap:1.3rem;}
+.logo{width:74px;height:74px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:#0D0D0D;}
+.brand{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--txt);}
+.brand-s{font-size:11px;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;margin-top:3px;}
+.tabs{display:flex;border:1.5px solid var(--bdr);border-radius:10px;overflow:hidden;width:100%;}
+.tab{flex:1;padding:11px;text-align:center;font-size:14px;font-weight:500;cursor:pointer;background:transparent;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;}
+.tab.on{background:var(--gold);color:#0D0D0D;font-weight:700;}
+.fld{display:flex;flex-direction:column;gap:5px;width:100%;}
+.fld label{font-size:11px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;}
+.fld input{background:var(--surf);border:1.5px solid var(--bdr);border-radius:8px;padding:12px 13px;font-size:15px;color:var(--txt);outline:none;font-family:'DM Sans',sans-serif;transition:border-color .18s;}
+.fld input:focus{border-color:var(--gold);}
+
+/* BUTTONS */
+.btn-p{background:var(--gold);color:#0D0D0D;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif;transition:background .18s;}
+.btn-p:hover{background:var(--gold-dk);}
+/* Sign out — clearly red-tinted */
+.btn-out{background:rgba(217,79,79,.2);color:#FF9090;border:1.5px solid rgba(217,79,79,.5);border-radius:7px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.btn-out:hover{background:rgba(217,79,79,.35);}
+/* Back button */
+.btn-back{background:var(--surf);color:#C8C0AD;border:1.5px solid #505050;border-radius:7px;padding:6px 12px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-back:hover{border-color:var(--gold);color:var(--gold);}
+/* Accept — solid green */
+.btn-acc{background:var(--green);color:#fff;border:none;border-radius:8px;padding:9px 10px;font-size:12px;font-weight:700;cursor:pointer;flex:1;min-width:58px;font-family:'DM Sans',sans-serif;}
+.btn-acc:hover{background:#2E9458;}
+/* Reschedule — solid gold */
+.btn-rs{background:var(--gold);color:#0D0D0D;border:none;border-radius:8px;padding:9px 10px;font-size:12px;font-weight:700;cursor:pointer;flex:1;min-width:58px;font-family:'DM Sans',sans-serif;}
+.btn-rs:hover{background:var(--gold-dk);}
+/* Cancel booking — red-tinted visible */
+.btn-cb{background:rgba(217,79,79,.18);color:#FF9090;border:1.5px solid rgba(217,79,79,.45);border-radius:8px;padding:9px 10px;font-size:12px;font-weight:700;cursor:pointer;flex:1;min-width:58px;font-family:'DM Sans',sans-serif;}
+.btn-cb:hover{background:rgba(217,79,79,.32);}
+/* Outlined secondary */
+.btn-s{background:var(--surf);color:#D0C8B5;border:1.5px solid #525252;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-s:hover{border-color:var(--gold);color:var(--gold);}
+/* Danger secondary */
+.btn-d{background:rgba(217,79,79,.18);color:#FF9090;border:1.5px solid rgba(217,79,79,.45);border-radius:8px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-d:hover{background:rgba(217,79,79,.32);}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;background:var(--dark);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:20;}
+.nav-logo{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--gold);}
+.nav-ttl{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--txt);}
+.content{flex:1;overflow-y:auto;padding:13px 13px 84px;}
+.bnav{position:sticky;bottom:0;display:flex;background:var(--dark);border-top:1px solid var(--bdr);}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0;cursor:pointer;border:none;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;}
+.bni.on{color:var(--gold);}
+.bni-ic{font-size:18px;}
+.bni-lb{font-size:10px;font-weight:500;}
+
+/* CARDS */
+.card{background:var(--card);border-radius:13px;padding:14px;margin-bottom:10px;border:1px solid var(--bdr);}
+.sh{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--txt);margin:14px 0 8px;}
+.ss{font-size:13px;color:var(--muted);margin-bottom:11px;margin-top:-5px;}
+
+/* BADGES */
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;}
+.bp{background:rgba(217,132,58,.22);color:#F5A060;}
+.bc{background:rgba(61,170,104,.22);color:#60D890;}
+.br{background:rgba(201,168,76,.22);color:#EEC860;}
+.bx{background:rgba(217,79,79,.22);color:#FF9090;}
+.brec{background:rgba(74,143,212,.18);color:#80BFEF;}
+.fb{background:rgba(74,143,212,.18);color:#80BFEF;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;}
+
+.meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;margin-right:9px;}
+.meta strong{color:var(--txt);}
+.act{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap;}
+
+/* SERVICE ROWS */
+.srow{background:var(--card);border-radius:11px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;border:1.5px solid var(--bdr);cursor:pointer;transition:border-color .18s;}
+.srow:hover,.srow.on{border-color:var(--gold);}
+.sp{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--gold);}
+.ring{width:20px;height:20px;border-radius:50%;border:2px solid #555;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ring.on{border-color:var(--gold);background:var(--gold);}
+.ring.on::after{content:'✓';font-size:11px;color:#0D0D0D;font-weight:700;}
+
+/* TIME GRID */
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:9px 0;}
+.ts{padding:9px 2px;text-align:center;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;background:var(--surf);border:1.5px solid #484848;color:var(--txt);transition:all .18s;font-family:'DM Sans',sans-serif;}
+.ts:hover{border-color:var(--gold);color:var(--gold);}
+.ts.on{background:var(--gold);color:#0D0D0D;border-color:var(--gold);}
+.ts.tk{opacity:.28;cursor:not-allowed;}
+.ts.tk:hover{border-color:#484848;color:var(--txt);}
+
+/* DATE STRIP */
+.dstrip{display:flex;gap:7px;overflow-x:auto;padding:3px 0 8px;scrollbar-width:none;}
+.dstrip::-webkit-scrollbar{display:none;}
+.dp{min-width:49px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:10px;border:1.5px solid #484848;cursor:pointer;transition:all .18s;background:var(--surf);}
+.dp:hover{border-color:var(--gold);}
+.dp.on{background:var(--gold);border-color:var(--gold);}
+.dp.on .dpd,.dp.on .dpn{color:#0D0D0D;}
+.dpd{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;}
+.dpn{font-size:17px;font-weight:600;color:var(--txt);}
+.dp.hbk::after{content:'';display:block;width:5px;height:5px;border-radius:50%;background:var(--gold);margin-top:2px;}
+.dp.on.hbk::after{background:#0D0D0D;}
+
+/* FORM */
+.fi{margin-bottom:10px;}
+.fl{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;display:block;}
+.fi input,.fi select,.fi textarea{width:100%;background:var(--surf);border:1.5px solid var(--bdr);border-radius:8px;padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--txt);outline:none;}
+.fi input:focus,.fi select:focus,.fi textarea:focus{border-color:var(--gold);}
+.fi textarea{resize:vertical;min-height:70px;}
+.fi select option{background:var(--surf);}
+
+/* STATS */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px;}
+.sc{background:var(--card);border-radius:12px;padding:13px;border:1px solid var(--bdr);}
+.sv{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--gold);}
+.sl{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* CALENDAR */
+.cal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;}
+.cal-m{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--txt);}
+.cal-nav{background:var(--surf);border:1.5px solid #505050;border-radius:8px;padding:7px 15px;color:var(--txt);cursor:pointer;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;}
+.cal-nav:hover{border-color:var(--gold);color:var(--gold);}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cdn{text-align:center;font-size:10px;color:var(--muted);font-weight:600;padding:4px 0;letter-spacing:.05em;}
+.cd{min-height:43px;border-radius:8px;padding:4px 2px;cursor:pointer;border:1px solid transparent;display:flex;flex-direction:column;align-items:center;transition:border-color .15s;}
+.cd:hover{border-color:var(--bdr);}
+.cd.td .cdd{background:var(--gold);color:#0D0D0D;border-radius:50%;width:21px;height:21px;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.cd.sel{border-color:var(--gold);background:rgba(201,168,76,.1);}
+.cd.em{cursor:default;}
+.cdd{font-size:12px;font-weight:500;width:21px;height:21px;display:flex;align-items:center;justify-content:center;color:var(--txt);}
+.cdots{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;margin-top:2px;}
+.cdot{width:5px;height:5px;border-radius:50%;}
+.cdot.confirmed{background:var(--green);}
+.cdot.pending{background:var(--orange);}
+.cdot.rescheduled{background:var(--gold);}
+.cavt{font-family:'Playfair Display',serif;font-size:15px;color:var(--gold);margin:11px 0 7px;}
+
+/* CLIENT CARDS */
+.cav{width:40px;height:40px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#0D0D0D;flex-shrink:0;}
+
+/* PRICE EDIT */
+.pi{width:68px;background:var(--surf);border:1.5px solid #555;border-radius:8px;padding:7px 6px;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--gold);outline:none;text-align:center;transition:border-color .18s;}
+.pi:focus{border-color:var(--gold);}
+.tgl{width:42px;height:24px;border-radius:12px;background:#484848;cursor:pointer;position:relative;border:none;}
+.tgl.on{background:var(--green);}
+.tgl::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .18s;}
+.tgl.on::after{left:21px;}
+
+/* MODAL */
+.modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:50;align-items:flex-end;justify-content:center;}
+.modal-wrap.open{display:flex;}
+.modal{background:#1C1C1C;border-radius:20px 20px 0 0;padding:21px 17px 28px;width:100%;max-width:430px;border:1px solid var(--bdr);border-bottom:none;max-height:88vh;overflow-y:auto;}
+.mtl{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:var(--txt);margin-bottom:13px;display:flex;justify-content:space-between;align-items:center;}
+.mcl{background:var(--surf);border:1.5px solid #505050;color:#C8C0AD;width:28px;height:28px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;}
+.mcl:hover{border-color:rgba(217,79,79,.6);color:#FF9090;}
+.dvd{border:none;border-top:1px solid var(--bdr);margin:13px 0;}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gold);color:#0D0D0D;padding:9px 20px;border-radius:20px;font-size:14px;font-weight:700;opacity:0;transition:all .25s;z-index:200;white-space:nowrap;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--muted);}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- LOGIN -->
+<div id="sc-login" class="screen active">
+  <div class="login-bg">
+    <div class="logo">N</div>
+    <div style="text-align:center"><div class="brand">Naomi Barbers</div><div class="brand-s">Portadown</div></div>
+    <div class="tabs">
+      <button class="tab on" onclick="setRole('client')">Client</button>
+      <button class="tab" onclick="setRole('manager')">Manager</button>
+    </div>
+    <div style="width:100%;display:flex;flex-direction:column;gap:10px">
+      <div class="fld"><label>Name</label><input id="ln" type="text" value="Alex Johnson" placeholder="Your name"/></div>
+      <div class="fld" id="pf" style="display:none"><label>Password</label><input id="lp" type="password" placeholder="Manager password"/></div>
+    </div>
+    <button class="btn-p" onclick="doLogin()">Continue</button>
+    <button class="btn-s" id="install-btn" style="display:none;width:100%;background:rgba(74,143,212,.18);color:#80BFEF;border:1.5px solid rgba(74,143,212,.3);margin-top:5px" onclick="installApp()">📱 Add to Home Screen</button>
+    <p id="lhint" style="font-size:12px;color:var(--muted);text-align:center"><span style="color:var(--gold)">Client</span> — book your next cut</p>
+  </div>
+</div>
+
+<!-- CLIENT HOME -->
+<div id="sc-ch" class="screen">
+  <div class="nav"><div class="nav-logo">Naomi Barbers</div><button class="btn-out" onclick="logout()">Sign out</button></div>
+  <div class="content">
+    <div class="card" style="margin-bottom:13px">
+      <div style="font-size:12px;color:var(--muted)">Welcome back,</div>
+      <div id="cw" style="font-family:'Playfair Display',serif;font-size:21px;font-weight:700;margin:2px 0 11px"></div>
+      <div id="cfb" style="display:none;margin-bottom:10px"></div>
+      <button class="btn-p" style="width:auto;padding:10px 20px;font-size:14px" onclick="goTab('client','book')">Book Appointment ✂</button>
+    </div>
+    <div class="sh">Your Bookings</div>
+    <div id="cl-bl"></div>
+  </div>
+  <div class="bnav">
+    <button class="bni on" onclick="goTab('client','home')"><span class="bni-ic">🏠</span><span class="bni-lb">Home</span></button>
+    <button class="bni" onclick="goTab('client','book')"><span class="bni-ic">✂</span><span class="bni-lb">Book</span></button>
+    <button class="bni" onclick="goTab('client','svcs')"><span class="bni-ic">💈</span><span class="bni-lb">Services</span></button>
+  </div>
+</div>
+
+<!-- CLIENT BOOK -->
+<div id="sc-cb" class="screen">
+  <div class="nav"><button class="btn-back" onclick="goTab('client','home')">← Back</button><div class="nav-ttl">New Booking</div><div style="width:60px"></div></div>
+  <div class="content">
+    <div class="sh">Choose a Service</div>
+    <div id="sb-list"></div>
+    <div id="recsug" style="display:none;background:rgba(74,143,212,.1);border:1.5px solid rgba(74,143,212,.3);border-radius:11px;padding:11px;margin-bottom:13px">
+      <div style="font-size:13px;color:#80BFEF;font-weight:700">⭐ Suggested for you</div>
+      <div id="recsug-t" style="font-size:13px;color:var(--muted);margin-top:4px"></div>
+    </div>
+    <div class="sh">Pick a Date</div>
+    <div class="dstrip" id="dstrip"></div>
+    <div class="sh" style="margin-top:5px">Pick a Time</div>
+    <p class="ss">Available slots 8am – 6pm</p>
+    <div class="tgrid" id="tgrid"></div>
+    <div class="sh">Details</div>
+    <div class="fi"><label class="fl">Notes (optional)</label><textarea id="bnotes" placeholder="e.g. skin fade, keep top longer..."></textarea></div>
+    <div id="bsum" style="display:none;background:var(--card);border-radius:11px;padding:12px;margin-bottom:12px;border:1.5px solid var(--gold)">
+      <div style="font-size:12px;color:var(--muted)">Summary</div>
+      <div id="bsumt" style="font-size:14px;margin-top:5px;line-height:1.65;color:var(--txt)"></div>
+    </div>
+    <button class="btn-p" id="sub-btn" onclick="submitBooking()" style="opacity:.35;pointer-events:none">Confirm Booking</button>
+  </div>
+  <div class="bnav">
+    <button class="bni" onclick="goTab('client','home')"><span class="bni-ic">🏠</span><span class="bni-lb">Home</span></button>
+    <button class="bni on" onclick="goTab('client','book')"><span class="bni-ic">✂</span><span class="bni-lb">Book</span></button>
+    <button class="bni" onclick="goTab('client','svcs')"><span class="bni-ic">💈</span><span class="bni-lb">Services</span></button>
+  </div>
+</div>
+
+<!-- CLIENT SERVICES -->
+<div id="sc-cs" class="screen">
+  <div class="nav"><div class="nav-logo">Naomi Barbers</div><button class="btn-out" onclick="logout()">Sign out</button></div>
+  <div class="content">
+    <div class="sh">Our Services</div><p class="ss">All cuts by Naomi — precision guaranteed</p>
+    <div id="cs-list"></div>
+    <div class="card" style="margin-top:11px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Opening Hours</div>
+      <div style="font-size:14px;line-height:2;color:var(--txt)">Mon – Fri &nbsp;<strong>8:00am – 6:00pm</strong><br>Saturday &nbsp;<strong>9:00am – 5:00pm</strong><br>Sunday &nbsp;<span style="color:var(--muted)">Closed</span></div>
+    </div>
+  </div>
+  <div class="bnav">
+    <button class="bni" onclick="goTab('client','home')"><span class="bni-ic">🏠</span><span class="bni-lb">Home</span></button>
+    <button class="bni" onclick="goTab('client','book')"><span class="bni-ic">✂</span><span class="bni-lb">Book</span></button>
+    <button class="bni on" onclick="goTab('client','svcs')"><span class="bni-ic">💈</span><span class="bni-lb">Services</span></button>
+  </div>
+</div>
+
+<!-- MANAGER HOME -->
+<div id="sc-mh" class="screen">
+  <div class="nav"><div class="nav-logo">Naomi Barbers</div><button class="btn-out" onclick="logout()">Sign out</button></div>
+  <div class="content">
+    <div class="sg" id="mstats"></div>
+    <div class="sh">Pending Requests</div><div id="mpend"></div>
+    <div class="sh" style="margin-top:13px">Today's Schedule</div><div id="mtoday"></div>
+  </div>
+  <div class="bnav">
+    <button class="bni on" onclick="goTab('manager','home')"><span class="bni-ic">📊</span><span class="bni-lb">Dashboard</span></button>
+    <button class="bni" onclick="goTab('manager','cal')"><span class="bni-ic">📅</span><span class="bni-lb">Calendar</span></button>
+    <button class="bni" onclick="goTab('manager','clients')"><span class="bni-ic">👥</span><span class="bni-lb">Clients</span></button>
+    <button class="bni" onclick="goTab('manager','svcs')"><span class="bni-ic">💈</span><span class="bni-lb">Services</span></button>
+  </div>
+</div>
+
+<!-- MANAGER CALENDAR -->
+<div id="sc-mcal" class="screen">
+  <div class="nav"><div class="nav-ttl">Calendar</div><button class="btn-out" onclick="logout()">Sign out</button></div>
+  <div class="content">
+    <div class="cal-hd">
+      <button class="cal-nav" onclick="chMo(-1)">‹</button>
+      <div class="cal-m" id="cal-lbl"></div>
+      <button class="cal-nav" onclick="chMo(1)">›</button>
+    </div>
+    <div class="cg" id="cg"></div>
+    <div id="cdblist"></div>
+  </div>
+  <div class="bnav">
+    <button class="bni" onclick="goTab('manager','home')"><span class="bni-ic">📊</span><span class="bni-lb">Dashboard</span></button>
+    <button class="bni on" onclick="goTab('manager','cal')"><span class="bni-ic">📅</span><span class="bni-lb">Calendar</span></button>
+    <button class="bni" onclick="goTab('manager','clients')"><span class="bni-ic">👥</span><span class="bni-lb">Clients</span></button>
+    <button class="bni" onclick="goTab('manager','svcs')"><span class="bni-ic">💈</span><span class="bni-lb">Services</span></button>
+  </div>
+</div>
+
+<!-- MANAGER CLIENTS -->
+<div id="sc-mclients" class="screen">
+  <div class="nav"><div class="nav-ttl">Recurring Clients</div><button class="btn-out" onclick="logout()">Sign out</button></div>
+  <div class="content">
+    <div style="margin-bottom:11px"><button class="btn-p" style="width:auto;padding:9px 18px;font-size:13px" onclick="openAddC()">+ Add Client</button></div>
+    <div id="clist"></div>
+  </div>
+  <div class="bnav">
+    <button class="bni" onclick="goTab('manager','home')"><span class="bni-ic">📊</span><span class="bni-lb">Dashboard</span></button>
+    <button class="bni" onclick="goTab('manager','cal')"><span class="bni-ic">📅</span><span class="bni-lb">Calendar</span></button>
+    <button class="bni on" onclick="goTab('manager','clients')"><span class="bni-ic">👥</span><span class="bni-lb">Clients</span></button>
+    <button class="bni" onclick="goTab('manager','svcs')"><span class="bni-ic">💈</span><span class="bni-lb">Services</span></button>
+  </div>
+</div>
+
+<!-- MANAGER SERVICES -->
+<div id="sc-msvcs" class="screen">
+  <div class="nav"><div class="nav-ttl">Services & Prices</div><button class="btn-out" onclick="logout()">Sign out</button></div>
+  <div class="content">
+    <p style="font-size:13px;color:var(--muted);margin-bottom:13px">Tap a price field to edit</p>
+    <div id="mslist"></div>
+  </div>
+  <div class="bnav">
+    <button class="bni" onclick="goTab('manager','home')"><span class="bni-ic">📊</span><span class="bni-lb">Dashboard</span></button>
+    <button class="bni" onclick="goTab('manager','cal')"><span class="bni-ic">📅</span><span class="bni-lb">Calendar</span></button>
+    <button class="bni" onclick="goTab('manager','clients')"><span class="bni-ic">👥</span><span class="bni-lb">Clients</span></button>
+    <button class="bni on" onclick="goTab('manager','svcs')"><span class="bni-ic">💈</span><span class="bni-lb">Services</span></button>
+  </div>
+</div>
+
+<!-- MODAL RESCHED -->
+<div class="modal-wrap" id="mresched">
+  <div class="modal">
+    <div class="mtl">Reschedule Booking <button class="mcl" onclick="cModal('mresched')">×</button></div>
+    <div id="ri" style="font-size:13px;color:var(--muted);background:var(--surf);border-radius:8px;padding:10px;margin-bottom:13px"></div>
+    <div class="fi"><label class="fl">New Date</label><input type="date" id="rd"/></div>
+    <div class="fi"><label class="fl">New Time</label><select id="rt"><option value="">Select...</option></select></div>
+    <div class="fi"><label class="fl">Message to Client</label><textarea id="rm" placeholder="Reason for rescheduling..."></textarea></div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn-p" style="flex:1" onclick="confResched()">Confirm Reschedule</button>
+      <button class="btn-d" style="flex:none;padding:12px 16px" onclick="cModal('mresched')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ADD CLIENT -->
+<div class="modal-wrap" id="maddcli">
+  <div class="modal">
+    <div class="mtl">Add Recurring Client <button class="mcl" onclick="cModal('maddcli')">×</button></div>
+    <div class="fi"><label class="fl">Client Name</label><input id="acn" type="text" placeholder="Full name"/></div>
+    <div class="fi"><label class="fl">Preferred Service</label><select id="acs"></select></div>
+    <div class="fi"><label class="fl">Frequency</label>
+      <select id="acf"><option value="weekly">Every week</option><option value="2weeks" selected>Every 2 weeks</option><option value="3weeks">Every 3 weeks</option><option value="monthly">Monthly</option></select>
+    </div>
+    <div class="fi"><label class="fl">Preferred Day</label>
+      <select id="acd"><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5" selected>Friday</option></select>
+    </div>
+    <div class="fi"><label class="fl">Preferred Time</label><select id="act"></select></div>
+    <div class="fi"><label class="fl">Notes</label><textarea id="acnotes" placeholder="Style preferences, allergies..."></textarea></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-p" style="flex:1" onclick="saveC()">Save Client</button>
+      <button class="btn-d" style="flex:none;padding:12px 16px" onclick="cModal('maddcli')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CLIENT DETAIL -->
+<div class="modal-wrap" id="mcd">
+  <div class="modal">
+    <div class="mtl" id="mcd-t">Profile <button class="mcl" onclick="cModal('mcd')">×</button></div>
+    <div id="mcd-b"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+const SVCS=[
+  {id:'fade',name:'Fade',desc:'Seamless skin or low fade',dur:'45 min',price:22,emoji:'✂'},
+  {id:'crew',name:'Crew Cut',desc:'Classic short taper',dur:'30 min',price:18,emoji:'💈'},
+  {id:'trim',name:'Trim & Tidy',desc:'Shape-up & line-up',dur:'20 min',price:14,emoji:'🪒'},
+  {id:'buzz',name:'Buzz Cut',desc:'All-over clipper cut',dur:'20 min',price:16,emoji:'⚡'},
+  {id:'beard',name:'Beard Trim',desc:'Sculpt & define',dur:'20 min',price:12,emoji:'🧔'},
+];
+const FL={weekly:'Every week','2weeks':'Every 2 wks','3weeks':'Every 3 wks',monthly:'Monthly'};
+const DN=['','Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+let S={
+  role:null,cname:'',
+  bks:[
+    {id:1,cli:'James T.',svc:'fade',date:'2026-04-01',time:'10:00',notes:'Skin fade, keep top longer',status:'confirmed'},
+    {id:2,cli:'Marcus B.',svc:'crew',date:'2026-04-01',time:'11:30',notes:'',status:'pending'},
+    {id:3,cli:'Liam O.',svc:'buzz',date:'2026-04-07',time:'14:00',notes:'Grade 1 all over',status:'pending'},
+    {id:4,cli:'Sam K.',svc:'trim',date:'2026-04-09',time:'09:00',notes:'Just a tidy-up',status:'confirmed'},
+    {id:5,cli:'James T.',svc:'fade',date:'2026-04-15',time:'10:00',notes:'Same as last time',status:'confirmed'},
+    {id:6,cli:'Marcus B.',svc:'crew',date:'2026-04-14',time:'11:30',notes:'',status:'confirmed'},
+  ],
+  rcs:[
+    {id:1,name:'James T.',svc:'fade',freq:'2weeks',day:2,time:'10:00',notes:'Skin fade, keep top longer. Precise fade line.',visits:8},
+    {id:2,name:'Marcus B.',svc:'crew',freq:'2weeks',day:1,time:'11:30',notes:'Standard taper crew cut.',visits:5},
+    {id:3,name:'Sam K.',svc:'trim',freq:'monthly',day:3,time:'09:00',notes:'Trim only. Early bird.',visits:3},
+  ],
+  nid:20,ss:null,sd:null,st:null,cy:2026,cm:3,csd:null,rid:null,mpwd:'naomi123'
+};
+
+function saveSt(){try{localStorage.setItem('nbarbers',JSON.stringify(S));}catch(e){console.warn('Storage failed');}}
+function loadSt(){try{const d=localStorage.getItem('nbarbers');if(d)Object.assign(S,JSON.parse(d));}catch(e){console.warn('Load failed');}}
+loadSt();
+const gs=id=>SVCS.find(s=>s.id===id)||{};
+const fmtD=d=>new Date(d+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+const toISO=()=>new Date().toISOString().slice(0,10);
+const ini=n=>n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+
+function showSc(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('sc-'+id).classList.add('active');}
+function goTab(r,t){
+  const m={client:{home:'ch',book:'cb',svcs:'cs'},manager:{home:'mh',cal:'mcal',clients:'mclients',svcs:'msvcs'}};
+  showSc(m[r][t]);
+  if(r==='client'){if(t==='home')rCH();if(t==='book')rCB();if(t==='svcs')rCS();}
+  else{if(t==='home')rMH();if(t==='cal')rCal();if(t==='clients')rClients();if(t==='svcs')rMSvcs();}
+}
+function setRole(r){
+  S.role=r;
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',(i===0&&r==='client')||(i===1&&r==='manager')));
+  document.getElementById('pf').style.display=r==='manager'?'flex':'none';
+  document.getElementById('lhint').innerHTML=r==='client'?'<span style="color:var(--gold)">Client</span> — book your next cut':'<span style="color:var(--gold)">Manager</span> — enter password';
+}
+function doLogin(){
+  const name=document.getElementById('ln').value.trim();
+  if(!name||name.length<2){showToast('Enter a valid name (2+ chars)');return;}
+  if(!/^[a-zA-Z\s'-]+$/.test(name)){showToast('Name contains invalid characters');return;}
+  if(S.role==='manager'){
+    const pwd=document.getElementById('lp').value;
+    if(!pwd||pwd!==S.mpwd){showToast('Invalid password');return;}
+  }
+  S.cname=name;
+  S.role==='manager'?goTab('manager','home'):goTab('client','home');
+}
+function logout(){S.role=null;S.ss=null;S.sd=null;S.st=null;document.getElementById('ln').value='';document.getElementById('lp').value='';showSc('login');}
+
+function rCH(){
+  document.getElementById('cw').textContent=S.cname;
+  const rc=S.rcs.find(c=>c.name===S.cname);
+  const fb=document.getElementById('cfb');
+  fb.style.display=rc?'block':'none';
+  if(rc)fb.innerHTML=`<span class="fb">⭐ Recurring · ${FL[rc.freq]}</span>`;
+  const my=S.bks.filter(b=>b.cli===S.cname);
+  document.getElementById('cl-bl').innerHTML=my.length?my.map(b=>bCard(b,false)).join(''):'<div class="empty"><div style="font-size:34px;margin-bottom:9px">📅</div><div>No bookings yet</div></div>';
+}
+
+function rCB(){
+  S.ss=null;S.sd=null;S.st=null;updSub();
+  document.getElementById('sb-list').innerHTML=SVCS.map(s=>`
+    <div class="srow" id="sr-${s.id}" onclick="selSvc('${s.id}')">
+      <div><div style="font-weight:500;font-size:15px;color:var(--txt)">${s.emoji} ${s.name}</div><div style="font-size:12px;color:var(--muted)">${s.desc} · ${s.dur}</div></div>
+      <div style="display:flex;align-items:center;gap:9px"><div class="sp">£${s.price}</div><div class="ring" id="ring-${s.id}"></div></div>
+    </div>`).join('');
+  const rc=S.rcs.find(c=>c.name===S.cname);
+  const rs=document.getElementById('recsug');
+  if(rc){rs.style.display='block';document.getElementById('recsug-t').textContent=`${gs(rc.svc).name} · ${FL[rc.freq]} · ${DN[rc.day]}s at ${rc.time}`;}
+  else rs.style.display='none';
+  const ds=document.getElementById('dstrip');ds.innerHTML='';
+  for(let i=0;i<14;i++){
+    const d=new Date();d.setDate(d.getDate()+i);
+    const iso=d.toISOString().slice(0,10);
+    const day=d.toLocaleDateString('en-GB',{weekday:'short'}).toUpperCase();
+    const hb=S.bks.some(b=>b.date===iso&&b.status!=='cancelled');
+    ds.innerHTML+=`<div class="dp${hb?' hbk':''}" id="dp-${iso}" onclick="selDate('${iso}')"><span class="dpd">${day}</span><span class="dpn">${d.getDate()}</span></div>`;
+  }
+  rTGrid();
+}
+function selSvc(id){
+  S.ss=id;
+  SVCS.forEach(s=>{document.getElementById('sr-'+s.id).classList.toggle('on',s.id===id);document.getElementById('ring-'+s.id).classList.toggle('on',s.id===id);});
+  updBSum();updSub();
+}
+function selDate(iso){
+  const now=new Date(),today=now.toISOString().slice(0,10);
+  const sel=new Date(iso+'T00:00:00');
+  if(iso<today){showToast('Cannot book past dates');return;}
+  S.sd=iso;S.st=null;
+  document.querySelectorAll('.dp').forEach(d=>d.classList.remove('on'));
+  document.getElementById('dp-'+iso).classList.add('on');
+  rTGrid();updBSum();updSub();
+}
+function rTGrid(){
+  const tg=document.getElementById('tgrid');
+  const slots=[];
+  const now=new Date(),today=now.toISOString().slice(0,10);
+  const curHour=now.getHours(),curMin=now.getMinutes();
+  for(let h=8;h<18;h++){slots.push(`${String(h).padStart(2,'0')}:00`);if(h<17)slots.push(`${String(h).padStart(2,'0')}:30`);}
+  const taken=S.bks.filter(b=>b.date===S.sd&&b.status!=='cancelled').map(b=>b.time);
+  tg.innerHTML=slots.map(t=>{
+    const [h,m]=t.split(':').map(Number);
+    const isPast=S.sd===today&&(h<curHour||(h===curHour&&m<curMin));
+    const disabled=taken.includes(t)||isPast;
+    return`<div class="ts${disabled?' tk':''}${S.st===t?' on':''}" onclick="${disabled?'':'selTime(\''+t+'\')'}">${t}</div>`;
+  }).join('');
+}
+function selTime(t){
+  if(!S.sd){showToast('Select a date first');return;}
+  S.st=t;
+  rTGrid();updBSum();updSub();
+}
+function updBSum(){
+  const el=document.getElementById('bsum'),st=document.getElementById('bsumt');
+  if(S.ss&&S.sd&&S.st){const s=gs(S.ss);el.style.display='block';st.innerHTML=`<strong>${s.name}</strong> · £${s.price}<br>📅 ${fmtD(S.sd)} at ${S.st}<br>⏱ ${s.dur}`;}
+  else el.style.display='none';
+}
+function updSub(){const b=document.getElementById('sub-btn');const ok=S.ss&&S.sd&&S.st;b.style.opacity=ok?'1':'0.35';b.style.pointerEvents=ok?'auto':'none';}
+function submitBooking(){
+  if(!confirm('Confirm this booking?'))return;
+  const notes=document.getElementById('bnotes').value.trim();
+  if(notes.length>200){showToast('Notes too long (max 200 chars)');return;}
+  const taken=S.bks.filter(b=>b.date===S.sd&&b.time===S.st&&b.status!=='cancelled');
+  if(taken.length){showToast('Time slot just booked!');rTGrid();return;}
+  S.bks.push({id:S.nid++,cli:S.cname,svc:S.ss,date:S.sd,time:S.st,notes,status:'pending'});
+  saveSt();
+  showToast('Booking submitted!');setTimeout(()=>goTab('client','home'),500);
+}
+function rCS(){
+  document.getElementById('cs-list').innerHTML=SVCS.map(s=>`
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between">
+      <div><div style="font-size:15px;font-weight:500;color:var(--txt)">${s.emoji} ${s.name}</div><div style="font-size:12px;color:var(--muted);margin-top:3px">${s.desc} · ${s.dur}</div></div>
+      <div class="sp">£${s.price}</div>
+    </div>`).join('');
+}
+
+function bCard(b,isM){
+  const s=gs(b.svc);
+  const irec=isM&&S.rcs.find(c=>c.name===b.cli);
+  const acts=isM?`<div class="act">
+    ${b.status==='pending'?`<button class="btn-acc" onclick="accBk(${b.id})">✓ Accept</button>`:''}
+    <button class="btn-rs" onclick="openResched(${b.id})">Reschedule</button>
+    <button class="btn-cb" onclick="canBk(${b.id})">Cancel</button>
+  </div>`:'';
+  const sm={pending:'bp',confirmed:'bc',rescheduled:'br',cancelled:'bx'};
+  return`<div class="card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--txt)">${s.name||b.svc}${irec?` <span class="badge brec" style="font-size:10px;vertical-align:middle">⭐</span>`:''}</div>
+        ${isM?`<div style="font-size:12px;color:var(--muted);margin-top:1px">${b.cli}</div>`:''}
+      </div>
+      <span class="badge ${sm[b.status]||'bp'}">${b.status}</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap">
+      <div class="meta">📅 <strong>${fmtD(b.date)}</strong></div>
+      <div class="meta">🕐 <strong>${b.time}</strong></div>
+      <div class="meta">💷 <strong>£${s.price||0}</strong></div>
+    </div>
+    ${b.notes?`<div style="font-size:12px;color:var(--muted);margin-top:6px;font-style:italic">"${b.notes}"</div>`:''}
+    ${b.rmsg?`<div style="font-size:12px;color:#EEC860;margin-top:5px">↺ ${b.rmsg}</div>`:''}
+    ${acts}
+  </div>`;
+}
+
+function rMH(){
+  const all=S.bks,pend=all.filter(b=>b.status==='pending'),conf=all.filter(b=>b.status==='confirmed');
+  const td=toISO(),tbks=all.filter(b=>b.date===td&&b.status!=='cancelled');
+  const rev=conf.reduce((a,b)=>a+(gs(b.svc).price||0),0);
+  document.getElementById('mstats').innerHTML=`
+    <div class="sc"><div class="sv">${pend.length}</div><div class="sl">Pending</div></div>
+    <div class="sc"><div class="sv">${conf.length}</div><div class="sl">Confirmed</div></div>
+    <div class="sc"><div class="sv">${tbks.length}</div><div class="sl">Today</div></div>
+    <div class="sc"><div class="sv">£${rev}</div><div class="sl">Est. revenue</div></div>`;
+  document.getElementById('mpend').innerHTML=pend.length?pend.map(b=>bCard(b,true)).join(''):'<div class="empty"><div style="font-size:30px;margin-bottom:8px">✅</div><div>No pending requests</div></div>';
+  document.getElementById('mtoday').innerHTML=tbks.length?tbks.sort((a,b)=>a.time.localeCompare(b.time)).map(b=>bCard(b,true)).join(''):'<div class="empty" style="padding:1.2rem"><div>No bookings today</div></div>';
+}
+
+function rCal(){
+  const y=S.cy,m=S.cm;
+  const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-lbl').textContent=`${MN[m]} ${y}`;
+  const fd=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate(),tds=toISO();
+  const g=document.getElementById('cg');
+  g.innerHTML=['S','M','T','W','T','F','S'].map(d=>`<div class="cdn">${d}</div>`).join('');
+  for(let i=0;i<fd;i++) g.innerHTML+=`<div class="cd em"></div>`;
+  for(let d=1;d<=dim;d++){
+    const iso=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dbks=S.bks.filter(b=>b.date===iso&&b.status!=='cancelled');
+    const dots=dbks.slice(0,3).map(b=>`<div class="cdot ${b.status}"></div>`).join('');
+    g.innerHTML+=`<div class="cd${iso===tds?' td':''}${iso===S.csd?' sel':''}" onclick="selCD('${iso}')"><div class="cdd">${d}</div>${dots?`<div class="cdots">${dots}</div>`:''}</div>`;
+  }
+  rCalDay();
+}
+function chMo(d){S.cm+=d;if(S.cm>11){S.cm=0;S.cy++;}if(S.cm<0){S.cm=11;S.cy--;}S.csd=null;rCal();}
+function selCD(iso){S.csd=iso;rCal();}
+function rCalDay(){
+  const el=document.getElementById('cdblist');
+  if(!S.csd){el.innerHTML='<div style="font-size:13px;color:var(--muted);margin-top:11px;text-align:center">Tap a day to view bookings</div>';return;}
+  const bks=S.bks.filter(b=>b.date===S.csd&&b.status!=='cancelled').sort((a,b)=>a.time.localeCompare(b.time));
+  el.innerHTML=`<div class="cavt">${fmtD(S.csd)}</div>`;
+  el.innerHTML+=bks.length?bks.map(b=>bCard(b,true)).join(''):'<div class="empty" style="padding:1.2rem"><div>No bookings this day</div></div>';
+}
+
+function rClients(){
+  const el=document.getElementById('clist');
+  if(!S.rcs.length){el.innerHTML='<div class="empty"><div style="font-size:32px;margin-bottom:9px">👥</div><div>No recurring clients yet</div></div>';return;}
+  el.innerHTML=S.rcs.map(c=>{
+    const s=gs(c.svc),lb=S.bks.filter(b=>b.cli===c.name).sort((a,b)=>b.date.localeCompare(a.date))[0];
+    return`<div class="card">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:9px">
+        <div class="cav">${ini(c.name)}</div>
+        <div style="flex:1"><div style="font-size:15px;font-weight:500;color:var(--txt)">${c.name} <span class="fb">${FL[c.freq]}</span></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">${s.emoji||''} ${s.name} · ${DN[c.day]}s ${c.time}</div></div>
+        <button class="btn-s" onclick="openCD(${c.id})">View</button>
+      </div>
+      <div style="display:flex;gap:13px">
+        <div class="meta">✂ <strong>${c.visits} visits</strong></div>
+        ${lb?`<div class="meta">📅 Last: <strong>${fmtD(lb.date)}</strong></div>`:''}
+      </div>
+      ${c.notes?`<div style="font-size:12px;color:var(--muted);margin-top:7px;font-style:italic">"${c.notes}"</div>`:''}
+    </div>`;
+  }).join('');
+}
+function openAddC(){
+  document.getElementById('acs').innerHTML=SVCS.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+  const ts=document.getElementById('act');ts.innerHTML='';
+  for(let h=8;h<18;h++){['00','30'].forEach(mn=>{if(h===17&&mn==='30')return;const t=`${String(h).padStart(2,'0')}:${mn}`;ts.innerHTML+=`<option value="${t}">${t}</option>`;});}
+  document.getElementById('acn').value='';document.getElementById('acnotes').value='';
+  oModal('maddcli');
+}
+function saveC(){
+  const name=document.getElementById('acn').value.trim();
+  if(!name||name.length<2){showToast('Name too short');return;}
+  if(!/^[a-zA-Z\s'-]+$/.test(name)){showToast('Invalid characters in name');return;}
+  if(S.rcs.find(c=>c.name.toLowerCase()===name.toLowerCase())){showToast('Client already exists');return;}
+  const notes=document.getElementById('acnotes').value.trim();
+  if(notes.length>300){showToast('Notes too long');return;}
+  S.rcs.push({id:S.nid++,name,svc:document.getElementById('acs').value,freq:document.getElementById('acf').value,day:parseInt(document.getElementById('acd').value),time:document.getElementById('act').value,notes,visits:0});
+  saveSt();
+  cModal('maddcli');showToast('Client added!');rClients();
+}
+function openCD(id){
+  const c=S.rcs.find(x=>x.id===id),s=gs(c.svc);
+  const hist=S.bks.filter(b=>b.cli===c.name).sort((a,b)=>b.date.localeCompare(a.date));
+  document.getElementById('mcd-t').innerHTML=`${c.name} <button class="mcl" onclick="cModal('mcd')">×</button>`;
+  const sm={pending:'bp',confirmed:'bc',rescheduled:'br',cancelled:'bx'};
+  document.getElementById('mcd-b').innerHTML=`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:13px">
+      <div class="cav" style="width:50px;height:50px;font-size:17px">${ini(c.name)}</div>
+      <div><div style="font-size:16px;font-weight:500;color:var(--txt)">${c.name}</div><div style="font-size:13px;color:var(--muted)">${FL[c.freq]} · ${c.visits} visits</div></div>
+    </div>
+    <div class="dvd"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;margin-bottom:13px;color:var(--txt)">
+      <div><div style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Service</div>${s.emoji} ${s.name}</div>
+      <div><div style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Schedule</div>${DN[c.day]}s at ${c.time}</div>
+    </div>
+    ${c.notes?`<div style="background:var(--surf);border-radius:8px;padding:10px;font-size:13px;color:var(--muted);font-style:italic;margin-bottom:13px">"${c.notes}"</div>`:''}
+    <div class="dvd"></div>
+    <div style="font-size:14px;font-weight:500;color:var(--txt);margin-bottom:9px">Booking History</div>
+    ${hist.length?hist.slice(0,5).map(b=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bdr)"><div><div style="font-size:13px;color:var(--txt)">${fmtD(b.date)} · ${b.time}</div><div style="font-size:12px;color:var(--muted)">${gs(b.svc).name}</div></div><span class="badge ${sm[b.status]}">${b.status}</span></div>`).join(''):'<div style="font-size:13px;color:var(--muted)">No history yet</div>'}
+    <div style="display:flex;gap:8px;margin-top:15px">
+      <button class="btn-p" style="flex:1" onclick="cModal('mcd')">Done</button>
+      <button class="btn-d" style="flex:none;padding:12px 16px" onclick="remC(${c.id})">Remove</button>
+    </div>`;
+  oModal('mcd');
+}
+function remC(id){
+  if(!confirm('Remove this client? Bookings will remain.'))return;
+  S.rcs=S.rcs.filter(c=>c.id!==id);
+  saveSt();
+  cModal('mcd');showToast('Client removed');rClients();
+}
+
+function rMSvcs(){
+  document.getElementById('mslist').innerHTML=SVCS.map(s=>`
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div><div style="font-size:16px;font-weight:500;color:var(--txt)">${s.emoji} ${s.name}</div><div style="font-size:12px;color:var(--muted);margin-top:3px">${s.desc} · ${s.dur}</div></div>
+        <div style="display:flex;align-items:center;gap:5px"><span style="font-size:18px;font-weight:700;color:var(--gold)">£</span><input class="pi" type="number" min="1" max="999" value="${s.price}" id="p-${s.id}" oninput="updP('${s.id}',this.value)"/></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0">
+        <span style="font-size:13px;color:var(--muted)">Available for booking</span>
+        <button class="tgl on" id="tg-${s.id}" onclick="this.classList.toggle('on')"></button>
+      </div>
+    </div>`).join('');
+}
+function updP(id,val){
+  const v=parseInt(val);
+  if(isNaN(v)||v<1||v>999){showToast('Price must be 1-999');document.getElementById('p-'+id).value=SVCS.find(x=>x.id===id).price;return;}
+  const s=SVCS.find(x=>x.id===id);
+  if(s){s.price=v;saveSt();showToast(`${s.name} → £${v}`);}
+}
+
+function accBk(id){
+  if(!confirm('Confirm this booking?'))return;
+  const b=S.bks.find(x=>x.id===id);
+  if(b&&b.status==='pending'){
+    b.status='confirmed';
+    const rc=S.rcs.find(c=>c.name===b.cli);
+    if(rc)rc.visits++;
+    saveSt();
+    showToast('Confirmed!');
+    const c=document.querySelector('.screen.active').id;
+    if(c==='sc-mh')rMH();else if(c==='sc-mcal')rCalDay();
+  }
+}
+function canBk(id){
+  if(!confirm('Cancel this booking?'))return;
+  const b=S.bks.find(x=>x.id===id);
+  if(b&&b.status!=='cancelled'){
+    b.status='cancelled';
+    saveSt();
+    showToast('Cancelled');
+    const c=document.querySelector('.screen.active').id;
+    if(c==='sc-mh')rMH();else if(c==='sc-mcal')rCalDay();
+  }
+}
+function openResched(id){
+  S.rid=id;const b=S.bks.find(x=>x.id===id),s=gs(b.svc);
+  document.getElementById('ri').textContent=`${b.cli} · ${s.name} · ${fmtD(b.date)} at ${b.time}`;
+  document.getElementById('rd').value=b.date;
+  const sel=document.getElementById('rt');sel.innerHTML='<option value="">Select time...</option>';
+  for(let h=8;h<18;h++){['00','30'].forEach(mn=>{if(h===17&&mn==='30')return;const t=`${String(h).padStart(2,'0')}:${mn}`;sel.innerHTML+=`<option value="${t}">${t}</option>`;});}
+  sel.value=b.time;document.getElementById('rm').value='';
+  oModal('mresched');
+}
+function confResched(){
+  const b=S.bks.find(x=>x.id===S.rid),nd=document.getElementById('rd').value,nt=document.getElementById('rt').value;
+  if(!nd||!nt){showToast('Select date & time');return;}
+  const now=new Date(),today=now.toISOString().slice(0,10);
+  if(nd<today){showToast('Cannot reschedule to past dates');return;}
+  const conflict=S.bks.filter(x=>x.id!==S.rid&&x.date===nd&&x.time===nt&&x.status!=='cancelled');
+  if(conflict.length){showToast('Time slot unavailable');return;}
+  if(!confirm('Reschedule this booking?'))return;
+  b.date=nd;b.time=nt;b.status='rescheduled';
+  const msg=document.getElementById('rm').value.trim();
+  if(msg)b.rmsg=msg;
+  saveSt();
+  cModal('mresched');showToast('Rescheduled!');
+  const c=document.querySelector('.screen.active').id;
+  if(c==='sc-mh')rMH();else if(c==='sc-mcal'){S.csd=nd;rCal();}
+}
+function oModal(id){document.getElementById(id).classList.add('open');}
+function cModal(id){document.getElementById(id).classList.remove('open');}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+// PWA Service Worker Registration
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('service-worker.js').then(r=>{
+    console.log('✓ Service Worker registered');
+  }).catch(e=>console.log('Service Worker failed:',e));
+}
+
+// PWA Install Prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt',e=>{
+  deferredPrompt=e;
+  if(deferredPrompt){
+    const installBtn=document.getElementById('install-btn');
+    if(installBtn)installBtn.style.display='flex';
+  }
+});
+
+function installApp(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choice=>{
+      if(choice.outcome==='accepted')showToast('App installed!');
+      deferredPrompt=null;
+    });
+  }
+}
+
+setRole('client');
+</script>
+</body>
+</html>
